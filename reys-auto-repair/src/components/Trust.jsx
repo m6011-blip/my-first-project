@@ -15,7 +15,7 @@ export default function Trust() {
         <h2>Honest repairs, shown before they are done</h2>
         <ol className="steps">
           {chapters.map((c, i) => (
-            <li key={c.id} className="step">
+            <li key={c.id} className="step" data-reveal>
               <div className="step-pic">
                 <Photo id={pictures[i].id} width="1280" height="854" sizes="(max-width: 900px) 100vw, 33vw" alt={pictures[i].alt} />
               </div>

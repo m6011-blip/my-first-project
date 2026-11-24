@@ -41,7 +41,12 @@ export default function Booking() {
     if (closedDay) found.date = 'Rey’s is closed on weekends. Choose a day from Monday to Friday.'
     setErrors(found)
     const first = Object.keys(found)[0]
-    if (first) { document.getElementById(first)?.focus(); return }
+    if (first) {
+      document.getElementById(first)?.focus()
+      // Replay the shake on every invalid submit.
+      requestAnimationFrame(() => document.querySelectorAll('.has-error').forEach((el) => { el.classList.remove('is-shaking'); void el.offsetWidth; el.classList.add('is-shaking') }))
+      return
+    }
     setState('sending')
     try {
       const res = await submitAppointment(form)
@@ -57,6 +62,7 @@ export default function Booking() {
     return (
       <section id="book" className="section book">
         <div className="wrap book-done" ref={doneRef} tabIndex={-1}>
+          <svg className="done-check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" /><path d="M15 27l8 8 15-17" /></svg>
           <p className="eyebrow">Request received</p>
           <h2>Thanks, {form.name.split(' ')[0]}. Rey&rsquo;s will call you to confirm.</h2>
           <p className="lead">
@@ -127,7 +133,7 @@ export default function Booking() {
             <input id="website" type="text" tabIndex={-1} autoComplete="off" value={form.website} onChange={set('website')} />
           </div>
           <button className="btn btn-primary btn-lg" type="submit" disabled={state === 'sending'}>
-            {state === 'sending' ? 'Sending...' : 'Send request'}
+            {state === 'sending' ? <><span className="spinner" aria-hidden="true" />Sending</> : 'Send request'}
           </button>
           {state === 'failed' && (
             <p className="error" role="alert">We could not send your request. Please try again, or call <a href={business.phoneHref}>{business.phoneDisplay}</a>.</p>

@@ -1,11 +1,12 @@
 import { useRef } from 'react'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 import Photo from './Photo.jsx'
 import OpenStatus from './OpenStatus.jsx'
 import { business } from '../data/business.js'
 
-gsap.registerPlugin(useGSAP)
+gsap.registerPlugin(useGSAP, ScrollTrigger)
 const BASE = import.meta.env.BASE_URL
 
 export default function Hero() {
@@ -19,6 +20,9 @@ export default function Hero() {
       tl.from('.hero-photo img', { opacity: 0, filter: 'grayscale(1) brightness(1.25) contrast(.6)', scale: 1.04, duration: 1.6 }, 0)
         .from('[data-rise]', { y: 28, opacity: 0, duration: 0.8, stagger: 0.1 }, 0.1)
         .from('.hero-facts > *', { y: 16, opacity: 0, duration: 0.6, stagger: 0.08 }, 0.7)
+        .from('.hero-badge', { scale: 0.6, opacity: 0, rotate: -8, duration: 0.7, ease: 'back.out(1.8)' }, 1.1)
+      gsap.to('.hero-badge', { y: -8, duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+      gsap.to('.hero-photo img', { yPercent: 6, ease: 'none', scrollTrigger: { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true } })
     })
   }, { scope: root })
 
@@ -49,6 +53,10 @@ export default function Hero() {
               fetchPriority="high"
             />
           </picture>
+          <div className="hero-badge" aria-label={`Rated ${business.rating} out of 5 by ${business.reviews} drivers`}>
+            <strong>{business.rating}</strong>
+            <span>{business.reviews} reviews</span>
+          </div>
         </div>
       </div>
       <div className="wrap hero-facts">

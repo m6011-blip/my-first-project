@@ -21,7 +21,7 @@ export default function Visit() {
             <a className="btn btn-ghost" href={business.mapsUrl} target="_blank" rel="noopener noreferrer">Get directions</a>
           </div>
         </div>
-        <div className="hours-card">
+        <div className="hours-card" data-reveal>
           <OpenStatus />
           <table className="hours">
             <caption className="sr-only">Opening hours</caption>
