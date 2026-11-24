@@ -89,7 +89,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .footer { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding: 40px 0; border-top: 1px solid var(--border); }
 
 @media (max-width: 800px) {
-  .nav nav, .scroll-hint { display: none; }
+  .scroll-hint { display: none; }
+  .nav { flex-wrap: wrap; row-gap: 4px; }
+  .nav nav { order: 3; width: 100%; gap: 20px; overflow-x: auto; padding-bottom: 4px; }
   .hero-inner, .notes-grid { grid-template-columns: 1fr; }
   .hero-bottle { order: -1; }
   .collection { padding-top: 80px; }
