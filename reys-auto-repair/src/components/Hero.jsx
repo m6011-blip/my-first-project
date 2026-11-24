@@ -6,6 +6,7 @@ import OpenStatus from './OpenStatus.jsx'
 import { business } from '../data/business.js'
 
 gsap.registerPlugin(useGSAP)
+const BASE = import.meta.env.BASE_URL
 
 export default function Hero() {
   const root = useRef(null)
@@ -38,10 +39,10 @@ export default function Hero() {
         </div>
         <div className="hero-photo">
           <picture>
-            <source media="(max-width: 639px)" srcSet="/img/photo-f194784616-780x975.jpg" />
+            <source media="(max-width: 639px)" srcSet={`${BASE}img/photo-f194784616-780x975.jpg`} />
             <img
-              src="/img/photo-f194784616-1280.jpg"
-              srcSet="/img/photo-f194784616-500.jpg 500w, /img/photo-f194784616-960.jpg 960w, /img/photo-f194784616-1280.jpg 1280w"
+              src={`${BASE}img/photo-f194784616-1280.jpg`}
+              srcSet={`${BASE}img/photo-f194784616-500.jpg 500w, ${BASE}img/photo-f194784616-960.jpg 960w, ${BASE}img/photo-f194784616-1280.jpg 1280w`}
               sizes="(max-width: 900px) 100vw, 50vw"
               width="1280" height="854"
               alt="A mechanic checks a car's engine with a diagnostic laptop in a shop bay"
