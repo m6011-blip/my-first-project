@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
+import Particles from '../components/reactbits/Particles.jsx'
 import Bottle from '../components/Bottle.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -23,7 +24,7 @@ export default function Notes() {
         defaults: { ease: 'none' },
         scrollTrigger: { trigger: root.current, start: 'top top', end: '+=2400', pin: true, scrub: 1 },
       })
-      tl.fromTo('.notes .liquid', { attr: { y: 180 } }, { attr: { y: 80 }, duration: 3 }, 0)
+      tl.fromTo('.notes .liquid', { attr: { y: 240 } }, { attr: { y: 112 }, duration: 3 }, 0)
       gsap.utils.toArray('.stage').forEach((el, i) => {
         tl.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, i)
         if (i < stages.length - 1) tl.to(el, { opacity: 0, y: -40, duration: 0.5, ease: 'power2.in' }, i + 0.9)
@@ -37,6 +38,7 @@ export default function Notes() {
 
   return (
     <section id="notes" ref={root} className="notes">
+      <div className="notes-particles" aria-hidden="true"><Particles particleCount={140} particleColors={['#f5c96b', '#ca8a04', '#ffffff']} speed={0.06} particleBaseSize={70} alphaParticles drift="up" glow={0.8} /></div>
       <div className="container notes-grid">
         <div className="notes-bottle"><Bottle c1="#ca8a04" c2="#3b0a22" className="bottle-lg" label="Bottle filling with fragrance" /></div>
         <div className="notes-copy">
