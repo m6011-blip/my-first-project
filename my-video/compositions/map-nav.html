@@ -1,0 +1,183 @@
+<template>
+  <style>
+    @font-face{font-family:"Cairo";font-weight:900;src:url("assets/fonts/cairo-arabic-900.woff2") format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF;}
+    @font-face{font-family:"Cairo";font-weight:900;src:url("assets/fonts/cairo-latin-900.woff2") format("woff2");unicode-range:U+0000-00FF,U+2000-206F;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    #root{position:absolute;inset:0;overflow:hidden;background:#eef0f1;font-family:"Cairo",sans-serif;font-weight:900;direction:rtl;}
+    #map-all{position:absolute;inset:0;}
+    #stage{position:absolute;inset:0;perspective:1500px;perspective-origin:50% 40%;overflow:hidden;}
+    #pivot{position:absolute;left:960px;top:780px;width:0;height:0;transform-style:preserve-3d;}
+    #world{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;}
+    #ground{position:absolute;left:-3000px;top:-3000px;width:9000px;height:9000px;background:#f1f2f3;}
+    .blk{position:absolute;background:#e1e5e8;border-radius:16px;}
+    .park{background:#cde4c1;}
+    .tree{position:absolute;width:30px;height:30px;border-radius:50%;background:#86c076;box-shadow:0 0 0 5px rgba(110,170,95,.35);}
+    .bld{position:absolute;transform-style:preserve-3d;}
+    .bld>div{position:absolute;}
+    #route{position:absolute;left:0;top:0;width:3000px;height:3000px;overflow:visible;transform:translateZ(2px);}
+    #dotw{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;transform:translateZ(4px);}
+    #dot{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;background:#2a6df4;border:8px solid #fff;box-shadow:0 0 0 14px rgba(42,109,244,.28);}
+    #ringw{position:absolute;width:0;height:0;transform:translateZ(3px);}
+    #ring{position:absolute;left:-90px;top:-90px;width:180px;height:180px;border-radius:50%;border:10px solid #e4002b;}
+    #pinw{position:absolute;width:0;height:0;transform-style:preserve-3d;}
+    #pin{position:absolute;left:-60px;bottom:0;width:120px;height:170px;}
+    #haze{position:absolute;left:0;right:0;top:0;height:460px;background:linear-gradient(#eef0f1 0%,rgba(238,240,241,.85) 35%,rgba(238,240,241,0) 100%);}
+    #chip{position:absolute;left:560px;width:800px;top:120px;height:130px;background:#fff;border-radius:65px;box-shadow:0 10px 40px rgba(0,0,0,.18);display:flex;align-items:center;gap:30px;padding:0 50px;color:#222;font-size:60px;}
+    #chip svg{width:56px;height:56px;flex:none;}
+    #nav{position:absolute;left:480px;width:960px;top:96px;height:200px;background:#e4002b;border-radius:34px;box-shadow:0 14px 44px rgba(0,0,0,.28);display:flex;align-items:center;gap:36px;padding:0 44px;color:#fff;}
+    #nav-arrow{width:120px;height:120px;flex:none;}
+    #nav-main{font-size:72px;line-height:1.2;}
+    #nav-sub{font-size:42px;line-height:1.3;opacity:.92;margin-top:4px;}
+    #eta{position:absolute;left:480px;width:960px;bottom:96px;height:170px;background:#fff;border-radius:34px;box-shadow:0 14px 44px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:space-between;padding:0 54px;color:#1b1b1b;}
+    #eta-t{font-size:78px;line-height:1.15;color:#e4002b;}
+    #eta-s{font-size:44px;line-height:1.2;color:#444;}
+    #arrive{position:absolute;left:380px;width:1160px;bottom:96px;height:190px;background:#e4002b;border-radius:95px;box-shadow:0 14px 44px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;color:#fff;font-size:92px;line-height:1.3;}
+    #wipe{position:absolute;inset:0;background:#e4002b;transform-origin:center bottom;}
+  </style>
+  <div id="root" data-composition-id="map-nav" data-width="1920" data-height="1080">
+    <div id="map-all" class="clip" data-start="0" data-duration="12">
+      <div id="stage" data-layout-allow-overflow><div id="pivot"><div id="world">
+        <div id="ground"></div>
+        <svg id="route" viewBox="0 0 3000 3000">
+          <path id="route-case" fill="none" stroke="#fff" stroke-width="44" stroke-linejoin="round" stroke-linecap="round"/>
+          <path id="route-line" fill="none" stroke="#2a6df4" stroke-width="26" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+        <div id="dotw"><div id="dot"></div></div>
+        <div id="ringw"><div id="ring"></div></div>
+        <div id="pinw"><div id="pin" data-layout-allow-occlusion data-layout-allow-overlap>
+          <svg viewBox="0 0 120 170" width="120" height="170"><path d="M60 166 C60 166 6 100 6 58 A54 54 0 1 1 114 58 C114 100 60 166 60 166Z" fill="#e4002b" stroke="#fff" stroke-width="7"/><circle cx="60" cy="58" r="38" fill="#fff"/><text x="60" y="73" text-anchor="middle" font-family="Cairo,sans-serif" font-weight="900" font-size="40" fill="#e4002b" direction="ltr">KFC</text></svg>
+        </div></div>
+      </div></div></div>
+      <div id="haze" data-layout-allow-occlusion></div>
+    </div>
+    <div id="chip" class="clip" data-start="0" data-duration="1.5">
+      <svg viewBox="0 0 56 56"><circle cx="23" cy="23" r="15" fill="none" stroke="#e4002b" stroke-width="7"/><path d="M35 35 L50 50" stroke="#e4002b" stroke-width="7" stroke-linecap="round"/></svg>
+      <span>أقرب فرع KFC إليك</span>
+    </div>
+    <div id="nav" class="clip" data-start="1.2" data-duration="8.6">
+      <svg id="nav-arrow" viewBox="0 0 64 64"></svg>
+      <div><div id="nav-main"></div><div id="nav-sub"></div></div>
+    </div>
+    <div id="eta" class="clip" data-start="1.4" data-duration="8.4">
+      <div><div id="eta-t">KFC</div><div id="eta-s">وجهتك</div></div>
+      <div id="eta-min" style="font-size:80px;line-height:1.2;"></div>
+    </div>
+    <div id="arrive" class="clip" data-start="10.1" data-duration="1.9">وصلت! الدجاج ينتظرك</div>
+    <div id="wipe" class="clip" data-start="0" data-duration="12"></div>
+  </div>
+  <script>
+    // ---- deterministic city ----
+    function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+    const R = rng(7);
+    const world = document.getElementById("world");
+    const PITCH = 300, KFC = { x: 2250, y: 450 };
+    function box(x, y, w, d, h, c) {
+      const b = document.createElement("div"); b.className = "bld";
+      b.style.cssText = "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + d + "px;";
+      const f = (st, col) => { const e = document.createElement("div"); e.style.cssText = st + "background:" + col + ";"; b.appendChild(e); };
+      f("left:0;top:0;width:" + w + "px;height:" + d + "px;transform:translateZ(" + h + "px);", c.top);
+      f("left:0;top:" + d + "px;width:" + w + "px;height:" + h + "px;transform-origin:0 0;transform:rotateX(90deg);", c.s);
+      f("left:0;top:0;width:" + w + "px;height:" + h + "px;transform-origin:0 0;transform:rotateX(90deg);", c.n);
+      f("left:0;top:0;width:" + h + "px;height:" + d + "px;transform-origin:0 0;transform:rotateY(-90deg);", c.w);
+      f("left:" + w + "px;top:0;width:" + h + "px;height:" + d + "px;transform-origin:0 0;transform:rotateY(-90deg);", c.e);
+      world.appendChild(b); return b;
+    }
+    const white = { top: "#fbfbfb", s: "#d9dee3", n: "#e8ebee", w: "#cdd3d9", e: "#e0e4e8" };
+    for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) {
+      const x0 = i * PITCH + 30, y0 = j * PITCH + 30, S = PITCH - 60;
+      const isK = i === 7 && j === 1;
+      const bl = document.createElement("div"); bl.className = "blk" + (!isK && R() < 0.16 ? " park" : "");
+      bl.style.cssText = "left:" + x0 + "px;top:" + y0 + "px;width:" + S + "px;height:" + S + "px;";
+      world.appendChild(bl);
+      if (isK) continue;
+      if (bl.className.indexOf("park") > -1) {
+        for (let k = 0; k < 7; k++) { const t = document.createElement("div"); t.className = "tree"; t.style.left = (x0 + 20 + R() * (S - 70)) + "px"; t.style.top = (y0 + 20 + R() * (S - 70)) + "px"; world.appendChild(t); }
+      } else {
+        const n = R() < 0.55 ? 1 : 2;
+        for (let k = 0; k < n; k++) {
+          const w = n === 1 ? 130 + R() * 70 : 90 + R() * 40, d = n === 1 ? 130 + R() * 70 : 90 + R() * 40;
+          const bx = n === 1 ? x0 + 20 + R() * (S - w - 40) : x0 + 16 + k * (S / 2) + R() * 10;
+          const by = y0 + 20 + R() * (S - d - 40);
+          box(bx, by, w, d, 22 + R() * 70, white);
+        }
+      }
+    }
+    box(2160, 360, 180, 180, 125, { top: "#e4002b", s: "#c70026", n: "#d9002a", w: "#b3001f", e: "#cf0027" });
+    const kl = document.createElement("img"); kl.src = "assets/logo-white.svg";
+    kl.style.cssText = "position:absolute;left:2190px;top:420px;width:120px;transform:translateZ(126px);";
+    world.appendChild(kl);
+    const ringw = document.getElementById("ringw"), pinw = document.getElementById("pinw");
+    ringw.style.left = KFC.x + "px"; ringw.style.top = KFC.y + "px";
+    pinw.style.left = KFC.x + "px"; pinw.style.top = KFC.y + "px";
+
+    // ---- route ----
+    const PTS = [[600,2700],[600,1800],[1500,1800],[1500,900],[2100,900],[2100,450]];
+    const d = "M" + PTS.map(p => p.join(" ")).join(" L");
+    document.getElementById("route-case").setAttribute("d", d);
+    document.getElementById("route-line").setAttribute("d", d);
+    const SEG = [], CUM = [0]; let L = 0;
+    for (let i = 1; i < PTS.length; i++) { const l = Math.abs(PTS[i][0]-PTS[i-1][0]) + Math.abs(PTS[i][1]-PTS[i-1][1]); SEG.push(l); L += l; CUM.push(L); }
+    const CORN = CUM.slice(1, -1), TURN = ["right","left","right","left"], NAMES = ["شارع المقرمش","طريق الأعشاب","ساحة الذوق","جادة الطعم"];
+    const DELTA = [-90, 90, -90, 90];
+    document.getElementById("route-case").style.strokeDasharray = L;
+    document.getElementById("route-line").style.strokeDasharray = L;
+    function pointAt(s) {
+      s = Math.max(0, Math.min(L, s));
+      for (let i = 0; i < SEG.length; i++) if (s <= CUM[i+1]) { const t = (s - CUM[i]) / SEG[i]; return [PTS[i][0] + (PTS[i+1][0]-PTS[i][0])*t, PTS[i][1] + (PTS[i+1][1]-PTS[i][1])*t]; }
+      return PTS[PTS.length-1];
+    }
+    const sm = t => { t = Math.max(0, Math.min(1, t)); return t*t*(3-2*t); };
+    function heading(s) { let h = 0; for (let k = 0; k < CORN.length; k++) h += DELTA[k] * sm((s - (CORN[k]-140)) / 280); return h; }
+
+    // ---- camera state, one function of timeline time ----
+    const st = { p: 0, k: 0.5, orbit: 25, tilt: 40, zoom: 0.42, draw: 0 };
+    const ARR = { right: '<polyline points="14,56 14,34 40,34" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round"/><polygon points="36,20 56,34 36,48" fill="#fff"/>',
+                  left: '<polyline points="50,56 50,34 24,34" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round"/><polygon points="28,20 8,34 28,48" fill="#fff"/>',
+                  dest: '<path d="M32 60 C32 60 10 36 10 24 A22 22 0 1 1 54 24 C54 36 32 60 32 60Z" fill="#fff"/><circle cx="32" cy="24" r="8" fill="#e4002b"/>' };
+    let lastKey = "";
+    const mins = n => n <= 1 ? "دقيقة واحدة" : n === 2 ? "دقيقتان" : n + " دقائق";
+    function update() {
+      const s = st.p, pt = pointAt(s);
+      const cx = pt[0] + (KFC.x - pt[0]) * st.k, cy = pt[1] + (KFC.y - pt[1]) * st.k;
+      const hd = heading(s) + st.orbit;
+      document.getElementById("pivot").style.transform = "rotateX(" + st.tilt + "deg) rotateZ(" + hd + "deg) scale(" + st.zoom + ")";
+      world.style.transform = "translate3d(" + (-cx) + "px," + (-cy) + "px,0)";
+      const dw = document.getElementById("dotw"); dw.style.left = pt[0] + "px"; dw.style.top = pt[1] + "px";
+      const ps = Math.max(0.8, Math.min(2.4, 0.95 / st.zoom));
+      pinw.style.transform = "translateZ(128px) rotateZ(" + (-hd) + "deg) rotateX(" + (-st.tilt) + "deg) scale(" + ps + ")";
+      const off = L * (1 - st.draw);
+      document.getElementById("route-case").style.strokeDashoffset = off;
+      document.getElementById("route-line").style.strokeDashoffset = off;
+      // turn-by-turn text
+      let k = CORN.findIndex(c => c > s + 4), key, main, sub, arrow;
+      const rem = Math.max(0, L - s);
+      if (k < 0) { key = "d"; main = "الوجهة على اليمين"; sub = "KFC"; arrow = ARR.dest; }
+      else { const m = Math.max(0, Math.round((CORN[k] - s) / 4 / 10) * 10); key = "k" + k + "_" + m;
+        main = m < 30 ? (TURN[k] === "right" ? "انعطف يمينًا الآن" : "انعطف يسارًا الآن") : (TURN[k] === "right" ? "انعطف يمينًا" : "انعطف يسارًا");
+        sub = (m < 30 ? "" : "بعد " + m + " م · ") + NAMES[k]; arrow = ARR[TURN[k]]; }
+      if (key !== lastKey) { lastKey = key;
+        document.getElementById("nav-arrow").innerHTML = arrow;
+        document.getElementById("nav-main").textContent = main; document.getElementById("nav-sub").textContent = sub; }
+      document.getElementById("eta-min").textContent = mins(Math.max(1, Math.ceil(rem / 1400)));
+    }
+
+    const tl = gsap.timeline({ paused: true });
+    tl.set("#wipe", { scaleY: 0 }, 0);
+    tl.to(st, { draw: 1, duration: 1.2, ease: "power2.out" }, 0.1);
+    tl.to(st, { k: 0, orbit: 0, tilt: 62, zoom: 1, duration: 1.4, ease: "power3.inOut" }, 0.2);
+    tl.to(st, { p: L, duration: 8.2, ease: "power1.inOut" }, 1.4);
+    tl.to(st, { k: 1, orbit: -55, tilt: 52, zoom: 1.3, duration: 1.8, ease: "power3.inOut" }, 9.6);
+    tl.fromTo("#chip", { y: -40, opacity: 1 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 0);
+    tl.to("#chip", { y: -200, opacity: 0, duration: 0.3, ease: "power3.in" }, 1.1);
+    tl.fromTo("#nav", { y: -260 }, { y: 0, duration: 0.4, ease: "power3.out" }, 1.2);
+    tl.to("#nav", { y: -260, duration: 0.3, ease: "power3.in" }, 9.5);
+    tl.fromTo("#eta", { y: 260 }, { y: 0, duration: 0.4, ease: "power3.out" }, 1.4);
+    tl.to("#eta", { y: 260, duration: 0.3, ease: "power3.in" }, 9.5);
+    tl.fromTo("#arrive", { y: 300, scale: 0.9 }, { y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 10.1);
+    tl.fromTo("#ring", { scale: 0.4, opacity: 0.9 }, { scale: 2.6, opacity: 0, duration: 0.9, ease: "power1.out", repeat: 8 }, 0);
+    tl.fromTo("#wipe", { scaleY: 0 }, { scaleY: 1, duration: 0.3, ease: "power3.inOut" }, 11.65);
+    tl.eventCallback("onUpdate", update);
+    update();
+    window.__timelines["map-nav"] = tl;
+  </script>
+</template>
